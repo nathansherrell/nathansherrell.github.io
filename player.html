@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head >
+    <title>Louisville Radio Delay</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="custom.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.js"></script>
+    <script type="text/javascript">
+        function getParameterByName(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        $(document).ready(function () {
+            var ready = false;
+            var team = getParameterByName('team');
+            var stream = {
+                    title: team + " radio delay",
+                    mp3: "http://tunein.streamguys1.com/" + team
+                };
+            var delayTime = 0;
+
+            $("#jquery_jplayer_1").jPlayer({
+                ready: function () {
+                    ready = true;
+                    $(this).jPlayer("setMedia", stream);
+                    $(this).jPlayer("play");
+                },
+                swfPath: "http://jplayer.org/latest/dist/jplayer",
+                cssSelectorAncestor: "",
+                cssSelector: {
+                    title: "#title",
+                    play: "#play",
+                    pause: "#pause",
+                    stop: "#stop",
+                    mute: "#mute",
+                    unmute: "#unmute",
+                    currentTime: "#currentTime",
+                    duration: "#duration"
+                }
+            });
+
+            $('#plus').click(function () {
+                if (delayTime > 0) {
+                    var currentTime = $("#jquery_jplayer_1").data("jPlayer").status.currentTime;
+                    console.log(currentTime++);
+                    $("#jquery_jplayer_1").jPlayer("pause", currentTime);
+                    $("#jquery_jplayer_1").jPlayer("play");
+                    delayTime--;
+                    //$('#delayTime').html(toHHMMSS(delayTime));
+                }
+            });
+
+            $('#minus').click(function () {
+                var currentTime = $("#jquery_jplayer_1").data("jPlayer").status.currentTime;
+                console.log(currentTime--);
+                if (currentTime > 0) {
+                    $("#jquery_jplayer_1").jPlayer("pause", currentTime);
+                    $("#jquery_jplayer_1").jPlayer("play");
+                    delayTime++;
+                    //$('#delayTime').html(toHHMMSS(delayTime));
+                }
+            });
+        });
+    </script>
+    <meta name="viewport" content="width=400, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <span id="title"></span>
+        </div>
+        <div id="controls">
+            <span id="play" class="glyphicon glyphicon-play" title="play"></span>
+            <span id="pause" class="glyphicon glyphicon-pause" title="pause"></span>
+            <span id="minus" class="glyphicon glyphicon-menu-left" title="decrease delay"></span>
+            <span id="currentTime"></span>
+            <span id="plus" class="glyphicon glyphicon-menu-right" title="increase delay"></span>
+        </div>
+        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+        <div id="ad">
+            AD GOES HERE
+        </div>
+    </div>
+</body>
+</html>
